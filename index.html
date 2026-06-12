@@ -1,3 +1,4 @@
+<!-- v2.1 2026-06-12: Supabase Realtime + error feedback -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1028,6 +1029,7 @@ function closeWechatModal(e) {
     div.innerHTML = '<div class="sender-label">' + label + '</div>' + text + '<div class="time">' + time + '</div>';
     messagesContainer.appendChild(div);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    return div;
   }
 
   function addSystemMessage(text) {
@@ -1058,6 +1060,7 @@ function closeWechatModal(e) {
       .select('*')
       .order('created_at', { ascending: true });
     if (error) { console.error('Load history error:', error); return; }
+    messagesContainer.innerHTML = '';
     data.forEach(function(msg) {
       if (msg.role === 'visitor' && msg.sender !== visitorId) return;
       if (msg.role === 'agent' && msg.recipient && msg.recipient !== visitorId) return;
@@ -1068,14 +1071,18 @@ function closeWechatModal(e) {
   async function sendMessage() {
     var text = messageInput.value.trim();
     if (!text) return;
-    addMessage(text, 'visitor', formatTime());
+    var msgEl = addMessage(text, 'visitor', formatTime());
     messageInput.value = '';
     var { error } = await supabase.from('messages').insert({
       content: text,
       sender: visitorId,
       role: 'visitor'
     });
-    if (error) console.error('Send error:', error);
+    if (error) {
+      console.error('Send error:', error);
+      msgEl.style.opacity = '0.5';
+      msgEl.title = '发送失败：' + (error.message || '未知错误');
+    }
   }
 
   messageInput.addEventListener('keydown', function(e) {
