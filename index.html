@@ -59,6 +59,7 @@
   --button-bg: #2c2c2e;
   --button-text: #f5f5f7;
   --button-hover: #3a3a3c;
+  --input-bg: #2c2c2e;
   --dot-inactive: rgba(255,255,255,0.2);
   --glass: rgba(28,28,30,0.72);
   --glass-border: rgba(255,255,255,0.08);
@@ -87,6 +88,7 @@
   --button-bg: #1a1a3e;
   --button-text: #e8e8ff;
   --button-hover: #23235a;
+  --input-bg: #1a1a3e;
   --dot-inactive: rgba(168,85,247,0.25);
   --glass: rgba(18,18,42,0.72);
   --glass-border: rgba(168,85,247,0.12);
@@ -115,6 +117,7 @@
   --button-bg: #eaf5e8;
   --button-text: #1a2e1a;
   --button-hover: #d8eed5;
+  --input-bg: #f5faf2;
   --dot-inactive: rgba(45,138,78,0.2);
   --glass: rgba(255,255,255,0.72);
   --glass-border: rgba(45,138,78,0.08);
@@ -518,6 +521,92 @@ body {
 }
 
 /* ============================================================
+   Contact Form
+   ============================================================ */
+.contact-form-section {
+  position: relative;
+  z-index: 1;
+  margin-top: 36px;
+}
+
+.contact-form-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+  transition: color 0.5s ease;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--input-bg);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.5s ease, color 0.5s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 13px 24px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+  opacity: 0.9;
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.form-success {
+  display: none;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(52,199,89,0.08);
+  color: #34c759;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  border: 1.5px solid rgba(52,199,89,0.25);
+}
+
+/* ============================================================
    Theme Switcher
    ============================================================ */
 .theme-switcher {
@@ -744,6 +833,24 @@ body {
       </div>
     </div>
 
+    <!-- Contact Form -->
+    <div class="contact-form-section">
+      <p class="contact-form-label">在线联系</p>
+      <form id="contactForm" onsubmit="handleContactForm(event)">
+        <div class="form-group">
+          <input type="text" id="formName" placeholder="您的姓名" required>
+        </div>
+        <div class="form-group">
+          <input type="text" id="formContact" placeholder="微信/QQ/手机号" required>
+        </div>
+        <div class="form-group">
+          <textarea id="formMessage" placeholder="请输入您的留言..." required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">发送留言</button>
+      </form>
+      <div class="form-success" id="formSuccess">留言已发送，我会尽快联系您！</div>
+    </div>
+
     <!-- Theme Switcher -->
     <div class="theme-switcher">
       <button class="theme-dot theme-dot-light active" data-theme="light" title="浅色主题" aria-label="切换到浅色主题"></button>
@@ -821,6 +928,22 @@ function closeWechatModal(e) {
     }
   }
 })();
+</script>
+
+<!-- Contact Form Handler -->
+<script>
+function handleContactForm(e) {
+  e.preventDefault();
+  var name = document.getElementById('formName').value.trim();
+  var contact = document.getElementById('formContact').value.trim();
+  var msg = document.getElementById('formMessage').value.trim();
+  if (!name || !contact || !msg) return;
+  var subject = encodeURIComponent(name + ' 的留言');
+  var body = encodeURIComponent('姓名：' + name + '\n联系方式：' + contact + '\n留言：' + msg);
+  window.location.href = 'mailto:q-qian1@users.noreply.github.com?subject=' + subject + '&body=' + body;
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+}
 </script>
 
 </body>
