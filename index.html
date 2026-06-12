@@ -1,4 +1,4 @@
-<!-- v2.2 2026-06-12: robust localStorage + loadHistory logging -->
+<!-- v2.3 2026-06-12: hide agent messages without recipient -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1070,7 +1070,7 @@ function closeWechatModal(e) {
       var count = 0;
       data.forEach(function(msg) {
         if (msg.role === 'visitor' && msg.sender !== visitorId) return;
-        if (msg.role === 'agent' && msg.recipient && msg.recipient !== visitorId) return;
+        if (msg.role === 'agent' && (!msg.recipient || msg.recipient !== visitorId)) return;
         addMessage(msg.content, msg.role, formatTimeFromISO(msg.created_at));
         count++;
       });
@@ -1122,7 +1122,7 @@ function closeWechatModal(e) {
       function(payload) {
         var msg = payload.new;
         if (msg.role === 'visitor') return;
-        if (msg.recipient && msg.recipient !== visitorId) return;
+        if (!msg.recipient || msg.recipient !== visitorId) return;
         addMessage(msg.content, msg.role, formatTimeFromISO(msg.created_at));
         if (!isChatOpen && msg.role === 'agent') updateUnread();
       }
