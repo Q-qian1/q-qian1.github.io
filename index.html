@@ -995,6 +995,12 @@ function closeWechatModal(e) {
   var visitorId = 'v_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
   console.log('Visitor ID:', visitorId);
   var visitorName = '访客' + visitorId.slice(2, 6);
+  var visitorIp = '';
+  fetch('https://api.ipify.org?format=json').then(function(r) { return r.json(); }).then(function(d) {
+    visitorIp = d.ip;
+    console.log('Visitor IP:', visitorIp);
+    sendMetaMessage();
+  }).catch(function() { console.log('IP fetch failed'); });
 
   var isChatOpen = false;
   var bubbleBtn = document.getElementById('bubbleBtn');
@@ -1125,6 +1131,20 @@ function closeWechatModal(e) {
         console.log('Chat connected, visitor:', visitorId);
       }
     });
+
+  async function sendMetaMessage() {
+    if (!visitorIp) return;
+    try {
+      await supabase.from('messages').insert({
+        content: 'META|ip=' + visitorIp,
+        sender: visitorId,
+        role: 'visitor'
+      });
+      console.log('Meta message sent with IP:', visitorIp);
+    } catch(e) {
+      console.error('sendMetaMessage failed:', e);
+    }
+  }
 })();
 </script>
 

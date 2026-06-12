@@ -78,7 +78,9 @@ body {
 }
 .visitor-info { flex: 1; min-width: 0; }
 .visitor-name { font-size: 13px; font-weight: 500; }
+.visitor-ip { font-size: 10px; color: #64748b; margin-top: 1px; }
 .visitor-preview { font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.visitor-time { font-size: 11px; color: #64748b; flex-shrink: 0; }
 .visitor-item:hover .visitor-delete { opacity: 1; }
 .visitor-delete {
   width: 24px; height: 24px; border-radius: 50%;
@@ -253,6 +255,16 @@ body {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, function(payload) {
         var msg = payload.new;
         if (msg.role === 'visitor') {
+          // Check for meta message (IP info)
+          if (msg.content.startsWith('META|')) {
+            var ip = msg.content.split('=')[1];
+            if (ip) {
+              if (!visitors[msg.sender]) visitors[msg.sender] = { id: msg.sender, name: '访客' + msg.sender.slice(2, 6), lastMsg: '', lastTime: msg.created_at, messages: [], ip: ip };
+              else visitors[msg.sender].ip = ip;
+              renderVisitorList();
+            }
+            return;
+          }
           upsertVisitor(msg.sender, msg.content, msg.created_at);
           visitors[msg.sender].messages.push(msg);
           renderVisitorList();
@@ -290,6 +302,7 @@ body {
       return '<div class="visitor-item' + (v.id === activeVisitorId ? ' active' : '') + '" data-id="' + v.id + '">' +
         '<div class="visitor-avatar">' + (v.name || '?').charAt(0) + '</div>' +
         '<div class="visitor-info"><div class="visitor-name">' + v.name + '</div>' +
+        (v.ip ? '<div class="visitor-ip">' + v.ip + '</div>' : '') +
         '<div class="visitor-preview">' + (v.lastMsg || '暂无消息') + '</div></div>' +
         '<div class="visitor-time">' + formatTimeFromISO(v.lastTime) + '</div>' +
         '<button class="visitor-delete" data-id="' + v.id + '">&#10005;</button></div>';
@@ -367,6 +380,15 @@ body {
     if (error) { console.error(error); return; }
     data.forEach(function(msg) {
       if (msg.role === 'visitor') {
+        // Check for meta message (IP info)
+        if (msg.content.startsWith('META|')) {
+          var ip = msg.content.split('=')[1];
+          if (ip) {
+            if (!visitors[msg.sender]) visitors[msg.sender] = { id: msg.sender, name: '访客' + msg.sender.slice(2, 6), lastMsg: '', lastTime: msg.created_at, messages: [], ip: ip };
+            else visitors[msg.sender].ip = ip;
+          }
+          return;
+        }
         upsertVisitor(msg.sender, msg.content, msg.created_at);
         if (!visitors[msg.sender].messages.some(function(m) { return m.id === msg.id; })) {
           visitors[msg.sender].messages.push(msg);
