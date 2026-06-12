@@ -770,8 +770,10 @@ body {
 function openModal(imgSrc, title, subtitle) {
   const modal = document.getElementById('wechatModal');
   modal.querySelector('img').src = imgSrc;
-  modal.querySelector('.modal-title').textContent = title;
-  modal.querySelector('.modal-subtitle').textContent = subtitle;
+  const titleEl = modal.querySelector('.modal-title');
+  const subtitleEl = modal.querySelector('.modal-subtitle');
+  if (titleEl) titleEl.textContent = title;
+  if (subtitleEl) subtitleEl.textContent = subtitle;
   modal.classList.add('active');
 }
 function closeWechatModal(e) {
