@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服面板 - 乾</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+.sidebar {
+  width: 260px;
+  background: #1e293b;
+  border-right: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #334155;
+}
+.sidebar-header h2 {
+  font-size: 18px;
+  color: #f1f5f9;
+}
+.sidebar-header .status {
+  font-size: 12px;
+  color: #22c55e;
+  margin-top: 4px;
+}
+.visitor-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+.visitor-item {
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.visitor-item:hover { background: #334155; }
+.visitor-item.active { background: #3b82f6; }
+.visitor-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: #475569;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.visitor-info { flex: 1; min-width: 0; }
+.visitor-name { font-size: 13px; font-weight: 500; }
+.visitor-preview { font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.visitor-time { font-size: 10px; color: #64748b; }
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.chat-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.chat-header .title {
+  font-size: 16px;
+  font-weight: 600;
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.message {
+  max-width: 75%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  position: relative;
+}
+.message.visitor {
+  align-self: flex-end;
+  background: #3b82f6;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.message.agent {
+  align-self: flex-start;
+  background: #334155;
+  color: #e2e8f0;
+  border-bottom-left-radius: 4px;
+}
+.message .sender-label {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+.message.visitor .sender-label { color: #bfdbfe; }
+.message .time {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 4px;
+  text-align: right;
+}
+.message.visitor .time { color: #bfdbfe; }
+.placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  font-size: 16px;
+}
+.chat-input-area {
+  padding: 12px 24px;
+  border-top: 1px solid #334155;
+  display: flex;
+  gap: 8px;
+  background: #1e293b;
+}
+.chat-input-area input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 14px;
+  outline: none;
+}
+.chat-input-area input:focus { border-color: #3b82f6; }
+.chat-input-area button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.chat-input-area button:hover { background: #2563eb; }
+.chat-input-area button:disabled { background: #475569; cursor: not-allowed; }
+.connection-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.connection-badge.connected { background: #064e3b; color: #22c55e; }
+.connection-badge.disconnected { background: #450a0a; color: #ef4444; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h2>客服面板 - 乾</h2>
+    <div class="status" id="connStatus">● 连接中...</div>
+  </div>
+  <div class="visitor-list" id="visitorList"></div>
+</div>
+
+<div class="main">
+  <div class="chat-header">
+    <span class="title" id="chatTitle">选择访客开始对话</span>
+    <span class="connection-badge disconnected" id="connBadge">未连接</span>
+  </div>
+  <div id="chatArea">
+    <div class="placeholder">← 从左侧选择访客</div>
+  </div>
+  <div class="chat-input-area" style="display:none" id="inputArea">
+    <input type="text" id="messageInput" placeholder="输入回复..." maxlength="500" disabled>
+    <button id="sendBtn" disabled>发送</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function() {
+  var SUPABASE_URL = 'https://gurcvmrqzzgjxjqahwux.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_fsnf_aN8tVmAPfAnAberDA_lMjkTHV_';
+  var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  var visitors = {};
+  var activeVisitorId = null;
+  var messagesContainer = null;
+
+  var chatTitle = document.getElementById('chatTitle');
+  var connStatus = document.getElementById('connStatus');
+  var connBadge = document.getElementById('connBadge');
+  var visitorList = document.getElementById('visitorList');
+  var chatArea = document.getElementById('chatArea');
+  var inputArea = document.getElementById('inputArea');
+  var messageInput = document.getElementById('messageInput');
+  var sendBtn = document.getElementById('sendBtn');
+
+  function formatTimeFromISO(isoStr) {
+    if (!isoStr) return '';
+    var d = new Date(isoStr);
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  }
+
+  function renderVisitorList() {
+    var entries = Object.values(visitors).sort(function(a, b) {
+      return new Date(b.lastTime) - new Date(a.lastTime);
+    });
+    visitorList.innerHTML = entries.map(function(v) {
+      return '<div class="visitor-item' + (v.id === activeVisitorId ? ' active' : '') + '" data-id="' + v.id + '">' +
+        '<div class="visitor-avatar">' + (v.name || '?').charAt(0) + '</div>' +
+        '<div class="visitor-info">' +
+          '<div class="visitor-name">' + v.name + '</div>' +
+          '<div class="visitor-preview">' + (v.lastMsg || '暂无消息') + '</div>' +
+        '</div>' +
+        '<div class="visitor-time">' + formatTimeFromISO(v.lastTime) + '</div>' +
+      '</div>';
+    }).join('');
+    document.querySelectorAll('.visitor-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        selectVisitor(this.dataset.id);
+      });
+    });
+  }
+
+  function selectVisitor(id) {
+    activeVisitorId = id;
+    var v = visitors[id];
+    chatTitle.textContent = v ? v.name : '选择访客';
+    inputArea.style.display = 'flex';
+    messageInput.disabled = false;
+    sendBtn.disabled = false;
+    renderVisitorList();
+    renderMessages(id);
+  }
+
+  function renderMessages(id) {
+    chatArea.innerHTML = '<div class="chat-messages" id="messagesContainer"></div>';
+    messagesContainer = document.getElementById('messagesContainer');
+    var v = visitors[id];
+    if (!v) return;
+    v.messages.forEach(function(msg) {
+      appendMessage(msg);
+    });
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function appendMessage(msg) {
+    if (!messagesContainer || !activeVisitorId) return;
+    var div = document.createElement('div');
+    div.className = 'message ' + msg.role;
+    var label = msg.role === 'visitor' ? (visitors[msg.sender] ? visitors[msg.sender].name : '访客') : '客服';
+    div.innerHTML = '<div class="sender-label">' + label + '</div>' +
+      msg.content +
+      '<div class="time">' + formatTimeFromISO(msg.created_at) + '</div>';
+    messagesContainer.appendChild(div);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function upsertVisitor(sender, content, createdAt) {
+    if (!visitors[sender]) {
+      visitors[sender] = {
+        id: sender,
+        name: '访客' + sender.slice(2, 6),
+        lastMsg: content,
+        lastTime: createdAt,
+        messages: []
+      };
+    } else {
+      visitors[sender].lastMsg = content;
+      visitors[sender].lastTime = createdAt;
+    }
+  }
+
+  async function loadAll() {
+    var { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .order('created_at', { ascending: true });
+    if (error) { console.error(error); return; }
+    data.forEach(function(msg) {
+      if (msg.role === 'visitor') {
+        upsertVisitor(msg.sender, msg.content, msg.created_at);
+        if (!visitors[msg.sender].messages.some(function(m) { return m.id === msg.id; })) {
+          visitors[msg.sender].messages.push(msg);
+        }
+      } else if (msg.role === 'agent') {
+        var allVisitors = Object.keys(visitors);
+        allVisitors.forEach(function(vid) {
+          visitors[vid].messages.push(msg);
+        });
+      }
+    });
+    renderVisitorList();
+  }
+
+  // Subscribe to realtime
+  supabase
+    .channel('messages')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' },
+      function(payload) {
+        var msg = payload.new;
+        if (msg.role === 'visitor') {
+          upsertVisitor(msg.sender, msg.content, msg.created_at);
+          visitors[msg.sender].messages.push(msg);
+          renderVisitorList();
+          if (activeVisitorId === msg.sender) {
+            appendMessage(msg);
+          }
+        } else if (msg.role === 'agent') {
+          Object.values(visitors).forEach(function(v) {
+            v.messages.push(msg);
+          });
+          if (activeVisitorId) {
+            appendMessage(msg);
+          }
+        }
+      }
+    )
+    .subscribe(function(status) {
+      if (status === 'SUBSCRIBED') {
+        connStatus.textContent = '● 已连接';
+        connBadge.textContent = '已连接';
+        connBadge.className = 'connection-badge connected';
+        loadAll();
+      }
+    });
+
+  async function sendReply() {
+    if (!activeVisitorId) return;
+    var text = messageInput.value.trim();
+    if (!text) return;
+    messageInput.value = '';
+
+    var { error } = await supabase.from('messages').insert({
+      content: text,
+      sender: 'agent',
+      role: 'agent'
+    });
+    if (error) console.error('Send error:', error);
+  }
+
+  messageInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); sendReply(); }
+  });
+  sendBtn.addEventListener('click', sendReply);
+})();
+</script>
+
+</body>
+</html>

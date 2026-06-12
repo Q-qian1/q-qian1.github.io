@@ -955,10 +955,13 @@ function closeWechatModal(e) {
 })();
 </script>
 
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <!-- Chat Widget -->
 <button class="chat-bubble-btn" id="bubbleBtn" title="在线客服">
   <span class="bubble-icon">💬</span>
-  <span class="badge" id="unreadBadge">1</span>
+  <span class="badge" id="unreadBadge" style="display:none">0</span>
 </button>
 
 <div class="chat-window" id="chatWindow">
@@ -984,13 +987,18 @@ function closeWechatModal(e) {
 
 <script>
 (function() {
-  var CHANNEL_NAME = 'chatwidget_channel';
-  var channel = null;
-  var visitorInfo = { name: '访客' + Math.random().toString(36).slice(2, 6) };
-  var isChatOpen = false;
-  var isConnected = false;
-  var agentOnline = false;
+  var SUPABASE_URL = 'https://gurcvmrqzzgjxjqahwux.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_fsnf_aN8tVmAPfAnAberDA_lMjkTHV_';
+  var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  var visitorId = localStorage.getItem('chat_visitor_id');
+  if (!visitorId) {
+    visitorId = 'v_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
+    localStorage.setItem('chat_visitor_id', visitorId);
+  }
+  var visitorName = '访客' + visitorId.slice(2, 6);
+
+  var isChatOpen = false;
   var bubbleBtn = document.getElementById('bubbleBtn');
   var chatWindow = document.getElementById('chatWindow');
   var closeBtn = document.getElementById('closeBtn');
@@ -999,79 +1007,25 @@ function closeWechatModal(e) {
   var messageInput = document.getElementById('messageInput');
   var sendBtn = document.getElementById('sendBtn');
   var unreadBadge = document.getElementById('unreadBadge');
+  var unreadCount = 0;
 
-  function initChannel() {
-    try {
-      channel = new BroadcastChannel(CHANNEL_NAME);
-      channel.onmessage = handleIncoming;
-      channel.postMessage({ type: 'visitor_online' });
-    } catch(e) {
-      initLocalStorageFallback();
-    }
+  function formatTime() {
+    var d = new Date();
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
   }
 
-  function initLocalStorageFallback() {
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'chatwidget_msg') {
-        try { handleIncoming({ data: JSON.parse(e.newValue) }); } catch(_) {}
-      }
-    });
-    channel = {
-      postMessage: function(data) {
-        localStorage.setItem('chatwidget_msg', JSON.stringify(Object.assign({}, data, { _ts: Date.now() })));
-        window.dispatchEvent(new StorageEvent('storage', { key: 'chatwidget_msg', newValue: JSON.stringify(data) }));
-      }
-    };
-  }
-
-  function handleIncoming(event) {
-    var msg = event.data;
-    if (!msg || msg._source === 'visitor') return;
-    switch(msg.type) {
-      case 'agent_online':
-        agentOnline = true;
-        updateAgentStatus();
-        break;
-      case 'agent_offline':
-        agentOnline = false;
-        updateAgentStatus();
-        break;
-      case 'agent_message':
-        hideTyping();
-        addMessage(msg.text, 'agent', msg.time);
-        if (!isChatOpen) updateUnread();
-        break;
-      case 'agent_typing':
-        if (isChatOpen) showTyping();
-        break;
-      case 'agent_stop_typing':
-        hideTyping();
-        break;
-      case 'ping':
-        channel.postMessage({ type: 'pong', _source: 'visitor' });
-        break;
-    }
-  }
-
-  function send(msg) {
-    msg._source = 'visitor';
-    msg.visitor = visitorInfo;
-    channel.postMessage(msg);
-  }
-
-  function updateAgentStatus() {
-    var dot = document.querySelector('.agent-status');
-    if (dot) {
-      dot.innerHTML = agentOnline
-        ? '<span class="online-dot"></span>在线'
-        : '<span style="color:#fbbf24;">●</span> 离线';
-    }
+  function formatTimeFromISO(isoStr) {
+    if (!isoStr) return formatTime();
+    var d = new Date(isoStr);
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
   }
 
   function addMessage(text, role, time) {
     var div = document.createElement('div');
-    div.className = 'message ' + role;
-    div.innerHTML = text + '<div class="time">' + (time || formatTime()) + '</div>';
+    var displayRole = (role === 'visitor') ? 'user' : 'agent';
+    div.className = 'message ' + displayRole;
+    var label = (role === 'visitor') ? visitorName : '客服';
+    div.innerHTML = '<div class="sender-label">' + label + '</div>' + text + '<div class="time">' + time + '</div>';
     messagesContainer.appendChild(div);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
@@ -1084,57 +1038,47 @@ function closeWechatModal(e) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
-  function showTyping() {
-    typingIndicator.style.display = 'flex';
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }
-
-  function hideTyping() {
-    typingIndicator.style.display = 'none';
-  }
-
-  function formatTime() {
-    var d = new Date();
-    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
-  }
-
   function updateUnread() {
-    var msgs = messagesContainer.querySelectorAll('.message.agent');
-    var count = msgs.length;
-    if (count > 0 && !isChatOpen) {
+    if (!isChatOpen) {
+      unreadCount++;
       unreadBadge.style.display = 'flex';
-      unreadBadge.textContent = count > 99 ? '99+' : count;
+      unreadBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
     }
   }
 
   function clearUnread() {
+    unreadCount = 0;
     unreadBadge.style.display = 'none';
     unreadBadge.textContent = '0';
   }
 
-  function sendMessage() {
-    var text = messageInput.value.trim();
-    if (!text) return;
-    addMessage(text, 'user', formatTime());
-    send({ type: 'visitor_message', text: text, time: formatTime() });
-    messageInput.value = '';
-    send({ type: 'visitor_stop_typing' });
+  async function loadHistory() {
+    var { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .order('created_at', { ascending: true });
+    if (error) { console.error('Load history error:', error); return; }
+    data.forEach(function(msg) {
+      if (msg.role === 'visitor' && msg.sender !== visitorId) return;
+      addMessage(msg.content, msg.role, formatTimeFromISO(msg.created_at));
+    });
   }
 
-  function connectChat() {
-    if (isConnected) return;
-    isConnected = true;
-    addSystemMessage('已连接到客服');
-    send({ type: 'visitor_joined', visitor: visitorInfo, firstMessage: '' });
+  async function sendMessage() {
+    var text = messageInput.value.trim();
+    if (!text) return;
+    addMessage(text, 'visitor', formatTime());
+    messageInput.value = '';
+    var { error } = await supabase.from('messages').insert({
+      content: text,
+      sender: visitorId,
+      role: 'visitor'
+    });
+    if (error) console.error('Send error:', error);
   }
 
   messageInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
-  });
-  messageInput.addEventListener('input', function() {
-    if (messageInput.value.length > 0) {
-      send({ type: 'visitor_typing' });
-    }
   });
   sendBtn.addEventListener('click', sendMessage);
 
@@ -1142,10 +1086,7 @@ function closeWechatModal(e) {
     isChatOpen = !isChatOpen;
     chatWindow.classList.toggle('active', isChatOpen);
     bubbleBtn.classList.toggle('open', isChatOpen);
-    if (isChatOpen) {
-      clearUnread();
-      connectChat();
-    }
+    if (isChatOpen) clearUnread();
   });
 
   closeBtn.addEventListener('click', function() {
@@ -1154,15 +1095,24 @@ function closeWechatModal(e) {
     bubbleBtn.classList.remove('open');
   });
 
-  setInterval(function() {
-    send({ type: 'visitor_online' });
-  }, 10000);
-
-  initChannel();
-
-  setTimeout(function() {
-    send({ type: 'visitor_online' });
-  }, 500);
+  // Subscribe to realtime
+  supabase
+    .channel('messages')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' },
+      function(payload) {
+        var msg = payload.new;
+        if (msg.role === 'visitor' && msg.sender === visitorId) return;
+        if (msg.role === 'visitor' && msg.sender !== visitorId) return;
+        addMessage(msg.content, msg.role, formatTimeFromISO(msg.created_at));
+        if (!isChatOpen && msg.role === 'agent') updateUnread();
+      }
+    )
+    .subscribe(function(status) {
+      if (status === 'SUBSCRIBED') {
+        loadHistory();
+        addSystemMessage('已连接到客服');
+      }
+    });
 })();
 </script>
 
