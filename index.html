@@ -1060,6 +1060,7 @@ function closeWechatModal(e) {
     if (error) { console.error('Load history error:', error); return; }
     data.forEach(function(msg) {
       if (msg.role === 'visitor' && msg.sender !== visitorId) return;
+      if (msg.role === 'agent' && msg.recipient && msg.recipient !== visitorId) return;
       addMessage(msg.content, msg.role, formatTimeFromISO(msg.created_at));
     });
   }
@@ -1101,8 +1102,8 @@ function closeWechatModal(e) {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' },
       function(payload) {
         var msg = payload.new;
-        if (msg.role === 'visitor' && msg.sender === visitorId) return;
-        if (msg.role === 'visitor' && msg.sender !== visitorId) return;
+        if (msg.role === 'visitor') return;
+        if (msg.recipient && msg.recipient !== visitorId) return;
         addMessage(msg.content, msg.role, formatTimeFromISO(msg.created_at));
         if (!isChatOpen && msg.role === 'agent') updateUnread();
       }

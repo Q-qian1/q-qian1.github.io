@@ -250,8 +250,10 @@ body {
           renderVisitorList();
           if (activeVisitorId === msg.sender) appendMessage(msg);
         } else if (msg.role === 'agent') {
-          Object.values(visitors).forEach(function(v) { v.messages.push(msg); });
-          if (activeVisitorId) appendMessage(msg);
+          if (msg.recipient && visitors[msg.recipient]) {
+            visitors[msg.recipient].messages.push(msg);
+          }
+          if (activeVisitorId === msg.recipient) appendMessage(msg);
         }
       })
       .subscribe(function(status) {
@@ -340,7 +342,9 @@ body {
           visitors[msg.sender].messages.push(msg);
         }
       } else if (msg.role === 'agent') {
-        Object.keys(visitors).forEach(function(vid) { visitors[vid].messages.push(msg); });
+        if (msg.recipient && visitors[msg.recipient]) {
+          visitors[msg.recipient].messages.push(msg);
+        }
       }
     });
     renderVisitorList();
@@ -351,7 +355,7 @@ body {
     var text = document.getElementById('messageInput').value.trim();
     if (!text) return;
     document.getElementById('messageInput').value = '';
-    var { error } = await supabase.from('messages').insert({ content: text, sender: 'agent', role: 'agent' });
+    var { error } = await supabase.from('messages').insert({ content: text, sender: 'agent', role: 'agent', recipient: activeVisitorId });
     if (error) console.error('Send error:', error);
   }
 
