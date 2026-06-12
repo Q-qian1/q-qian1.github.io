@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>乾 - 个人名片</title>
+<title>乾</title>
 <style>
 /* ============================================================
    CSS Variables - Theme System
@@ -705,7 +705,8 @@ body {
     <div class="bio-section">
       <p class="bio-label">关于</p>
       <p class="bio-text">
-        资深开挂玩家，没框不会玩，拥有10年开挂经历。
+        前腾讯全栈开发工程师，现自主创业。带团队开发了编程导航、面试鸭、鱼皮 AI 导航等多款产品，
+        致力于用技术让编程学习更简单、更高效。
       </p>
     </div>
 
@@ -757,7 +758,9 @@ body {
 <!-- Wechat QR Modal -->
 <div class="modal-overlay" id="wechatModal" onclick="closeWechatModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <img src="wechat-qr.png" alt="二维码">
+    <img src="wechat-qr.png" alt="微信二维码">
+    <p class="modal-title">扫码添加微信</p>
+    <p class="modal-subtitle">打开微信扫一扫，添加好友</p>
     <button class="modal-close" onclick="closeWechatModal()">关闭</button>
   </div>
 </div>
@@ -769,10 +772,8 @@ body {
 function openModal(imgSrc, title, subtitle) {
   const modal = document.getElementById('wechatModal');
   modal.querySelector('img').src = imgSrc;
-  const titleEl = modal.querySelector('.modal-title');
-  const subtitleEl = modal.querySelector('.modal-subtitle');
-  if (titleEl) titleEl.textContent = title;
-  if (subtitleEl) subtitleEl.textContent = subtitle;
+  modal.querySelector('.modal-title').textContent = title;
+  modal.querySelector('.modal-subtitle').textContent = subtitle;
   modal.classList.add('active');
 }
 function closeWechatModal(e) {
