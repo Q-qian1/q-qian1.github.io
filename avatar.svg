@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#4338ca"/>
+    </radialGradient>
+    <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b"/>
+      <stop offset="100%" style="stop-color:#312e81"/>
+    </linearGradient>
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE4C4"/>
+      <stop offset="100%" style="stop-color:#F5D0A9"/>
+    </linearGradient>
+    <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0E7FF"/>
+      <stop offset="100%" style="stop-color:#C7D2FE"/>
+    </linearGradient>
+    <linearGradient id="lensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(99,102,241,0.25)"/>
+      <stop offset="100%" style="stop-color:rgba(99,102,241,0.1)"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background Circle -->
+  <circle cx="200" cy="200" r="195" fill="url(#bgGrad)"/>
+  <circle cx="200" cy="200" r="195" fill="none" stroke="#4338ca" stroke-width="4"/>
+
+  <!-- Hair (messy programmer hair) -->
+  <ellipse cx="200" cy="112" rx="105" ry="82" fill="url(#hairGrad)"/>
+  <ellipse cx="145" cy="100" rx="45" ry="55" fill="url(#hairGrad)"/>
+  <ellipse cx="255" cy="100" rx="45" ry="55" fill="url(#hairGrad)"/>
+  <ellipse cx="200" cy="80" rx="70" ry="40" fill="url(#hairGrad)"/>
+  <ellipse cx="120" cy="130" rx="35" ry="40" fill="url(#hairGrad)"/>
+  <ellipse cx="280" cy="130" rx="35" ry="40" fill="url(#hairGrad)"/>
+
+  <!-- Sideburns -->
+  <ellipse cx="108" cy="160" rx="20" ry="35" fill="url(#hairGrad)"/>
+  <ellipse cx="292" cy="160" rx="20" ry="35" fill="url(#hairGrad)"/>
+
+  <!-- Body / Shirt -->
+  <rect x="120" y="300" width="160" height="100" rx="12" fill="url(#shirtGrad)"/>
+  <rect x="120" y="300" width="160" height="100" rx="12" fill="none" stroke="#A5B4FC" stroke-width="2"/>
+
+  <!-- Collar -->
+  <polygon points="170,300 200,340 230,300" fill="#C7D2FE" stroke="#A5B4FC" stroke-width="2"/>
+  <rect x="175" y="312" width="10" height="8" rx="2" fill="#818CF8" transform="rotate(-15,180,316)"/>
+  <rect x="215" y="312" width="10" height="8" rx="2" fill="#818CF8" transform="rotate(15,220,316)"/>
+
+  <!-- Shirt pocket -->
+  <rect x="230" y="330" width="35" height="22" rx="4" fill="#C7D2FE" stroke="#A5B4FC" stroke-width="1.5"/>
+  <line x1="235" y1="338" x2="260" y2="338" stroke="#818CF8" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+  <!-- Pen in pocket -->
+  <rect x="243" y="315" width="4" height="25" rx="2" fill="#6366F1"/>
+  <rect x="244" y="312" width="2" height="5" rx="1" fill="#312E81"/>
+
+  <!-- Face -->
+  <ellipse cx="200" cy="250" rx="95" ry="82" fill="url(#skinGrad)"/>
+
+  <!-- Rosy cheeks -->
+  <ellipse cx="140" cy="270" rx="18" ry="12" fill="#FFB6C1" opacity="0.4"/>
+  <ellipse cx="260" cy="270" rx="18" ry="12" fill="#FFB6C1" opacity="0.4"/>
+
+  <!-- Glasses -->
+  <rect x="117" y="218" width="62" height="40" rx="10" fill="url(#lensGrad)" stroke="#312E81" stroke-width="3"/>
+  <rect x="221" y="218" width="62" height="40" rx="10" fill="url(#lensGrad)" stroke="#312E81" stroke-width="3"/>
+
+  <!-- Glasses bridge -->
+  <line x1="179" y1="238" x2="221" y2="238" stroke="#312E81" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Eyes -->
+  <circle cx="155" cy="238" r="8" fill="#1E1B4B"/>
+  <circle cx="152" cy="235" r="3" fill="white"/>
+  <circle cx="245" cy="238" r="8" fill="#1E1B4B"/>
+  <circle cx="242" cy="235" r="3" fill="white"/>
+
+  <!-- Eyebrows -->
+  <path d="M125,210 Q140,203 170,210" fill="none" stroke="#1E1B4B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M230,210 Q260,203 275,210" fill="none" stroke="#1E1B4B" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Nose -->
+  <ellipse cx="200" cy="260" rx="8" ry="6" fill="#E8C8A0" stroke="#D4A574" stroke-width="1.5"/>
+
+  <!-- Smile -->
+  <path d="M170,280 Q200,305 230,280" fill="none" stroke="#D4A574" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Teeth showing in smile -->
+  <path d="M185,285 Q200,297 215,285 Z" fill="white" stroke="#D4A574" stroke-width="1"/>
+
+  <!-- Code brackets decorative elements around head -->
+  <text x="60" y="175" font-family="monospace" font-size="28" font-weight="bold" fill="rgba(255,255,255,0.3)">&lt;/</text>
+  <text x="305" y="175" font-family="monospace" font-size="28" font-weight="bold" fill="rgba(255,255,255,0.3)">&gt;</text>
+
+  <!-- Floating code symbols -->
+  <text x="85" y="140" font-family="monospace" font-size="16" fill="rgba(255,255,255,0.25)">[]</text>
+  <text x="290" y="145" font-family="monospace" font-size="16" fill="rgba(255,255,255,0.25)">{}</text>
+  <text x="100" y="310" font-family="monospace" font-size="14" fill="rgba(255,255,255,0.2)">()</text>
+  <text x="275" y="315" font-family="monospace" font-size="14" fill="rgba(255,255,255,0.2)">##</text>
+
+  <!-- Small star/sparkle decorations -->
+  <circle cx="88" cy="200" r="3" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="312" cy="200" r="3" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="95" cy="155" r="2" fill="rgba(255,255,255,0.35)"/>
+  <circle cx="305" cy="155" r="2" fill="rgba(255,255,255,0.35)"/>
+</svg>

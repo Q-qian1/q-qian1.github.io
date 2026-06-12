@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>程序员鱼皮 - 个人名片</title>
+<style>
+/* ============================================================
+   CSS Variables - Theme System
+   ============================================================ */
+:root {
+  /* Light Theme (Default - Apple Inspired) */
+  --bg-primary: #f5f5f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #999;
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --accent-light: rgba(0,113,227,0.08);
+  --border: rgba(0,0,0,0.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.1);
+  --tag-bg: #f0f0f2;
+  --tag-text: #6e6e73;
+  --divider: rgba(0,0,0,0.06);
+  --button-bg: #f0f0f2;
+  --button-text: #1d1d1f;
+  --button-hover: #e5e5e7;
+  --input-bg: #f5f5f7;
+  --dot-inactive: rgba(0,0,0,0.15);
+  --glass: rgba(255,255,255,0.72);
+  --glass-border: rgba(0,0,0,0.06);
+  --product-grad-1: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --product-grad-2: linear-gradient(135deg, #ec4899, #f43f5e);
+  --product-grad-3: linear-gradient(135deg, #06b6d4, #3b82f6);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-card: #1c1c1e;
+  --bg-card-hover: #2c2c2e;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --text-tertiary: #6e6e73;
+  --accent: #2997ff;
+  --accent-hover: #40a4ff;
+  --accent-light: rgba(41,151,255,0.12);
+  --border: rgba(255,255,255,0.1);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+  --tag-bg: #2c2c2e;
+  --tag-text: #a1a1a6;
+  --divider: rgba(255,255,255,0.08);
+  --button-bg: #2c2c2e;
+  --button-text: #f5f5f7;
+  --button-hover: #3a3a3c;
+  --dot-inactive: rgba(255,255,255,0.2);
+  --glass: rgba(28,28,30,0.72);
+  --glass-border: rgba(255,255,255,0.08);
+  --product-grad-1: linear-gradient(135deg, #4f46e5, #7c3aed);
+  --product-grad-2: linear-gradient(135deg, #db2777, #e11d48);
+  --product-grad-3: linear-gradient(135deg, #0891b2, #2563eb);
+}
+
+[data-theme="cyberpunk"] {
+  --bg-primary: #0a0a1a;
+  --bg-card: #12122a;
+  --bg-card-hover: #1a1a3e;
+  --text-primary: #e8e8ff;
+  --text-secondary: #a0a0cc;
+  --text-tertiary: #6a6a99;
+  --accent: #a855f7;
+  --accent-hover: #c084fc;
+  --accent-light: rgba(168,85,247,0.12);
+  --border: rgba(168,85,247,0.15);
+  --shadow-sm: 0 1px 3px rgba(168,85,247,0.08);
+  --shadow-md: 0 4px 20px rgba(168,85,247,0.12);
+  --shadow-lg: 0 20px 60px rgba(168,85,247,0.15);
+  --tag-bg: #1a1a3e;
+  --tag-text: #a0a0cc;
+  --divider: rgba(168,85,247,0.12);
+  --button-bg: #1a1a3e;
+  --button-text: #e8e8ff;
+  --button-hover: #23235a;
+  --dot-inactive: rgba(168,85,247,0.25);
+  --glass: rgba(18,18,42,0.72);
+  --glass-border: rgba(168,85,247,0.12);
+  --product-grad-1: linear-gradient(135deg, #a855f7, #6366f1);
+  --product-grad-2: linear-gradient(135deg, #f43f5e, #ec4899);
+  --product-grad-3: linear-gradient(135deg, #06b6d4, #22d3ee);
+}
+
+[data-theme="nature"] {
+  --bg-primary: #f8faf5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f4f9f2;
+  --text-primary: #1a2e1a;
+  --text-secondary: #5a7a5a;
+  --text-tertiary: #8aaa8a;
+  --accent: #2d8a4e;
+  --accent-hover: #36a05a;
+  --accent-light: rgba(45,138,78,0.08);
+  --border: rgba(45,138,78,0.1);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.07);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.09);
+  --tag-bg: #eaf5e8;
+  --tag-text: #4a7a4a;
+  --divider: rgba(45,138,78,0.08);
+  --button-bg: #eaf5e8;
+  --button-text: #1a2e1a;
+  --button-hover: #d8eed5;
+  --dot-inactive: rgba(45,138,78,0.2);
+  --glass: rgba(255,255,255,0.72);
+  --glass-border: rgba(45,138,78,0.08);
+  --product-grad-1: linear-gradient(135deg, #059669, #10b981);
+  --product-grad-2: linear-gradient(135deg, #65a30d, #84cc16);
+  --product-grad-3: linear-gradient(135deg, #0d9488, #14b8a6);
+}
+
+/* ============================================================
+   Base & Reset
+   ============================================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: background 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
+              color 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   Main Card Container
+   ============================================================ */
+.card-wrapper {
+  width: 100%;
+  max-width: 720px;
+  perspective: 1000px;
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  padding: 48px 44px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
+              border-color 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
+              box-shadow 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 300px;
+  height: 300px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: background 0.5s ease;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 200px;
+  height: 200px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: background 0.5s ease;
+}
+
+/* ============================================================
+   Header Section
+   ============================================================ */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 36px;
+}
+
+.avatar-container {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-md);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+  display: block;
+  background: #6366f1;
+}
+
+.avatar-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0.3;
+  animation: avatarPulse 3s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.04); opacity: 0.15; }
+}
+
+.header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  transition: color 0.5s ease;
+  line-height: 1.2;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  margin-top: 6px;
+  transition: color 0.5s ease;
+  letter-spacing: -0.01em;
+}
+
+.title-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* ============================================================
+   Divider
+   ============================================================ */
+.divider {
+  height: 1px;
+  background: var(--divider);
+  margin: 0 0 36px 0;
+  position: relative;
+  z-index: 1;
+  transition: background 0.5s ease;
+}
+
+/* ============================================================
+   Bio Section
+   ============================================================ */
+.bio-section {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 36px;
+}
+
+.bio-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+  transition: color 0.5s ease;
+}
+
+.bio-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  transition: color 0.5s ease;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Contact Section
+   ============================================================ */
+.contact-section {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 36px;
+}
+
+.contact-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+  transition: color 0.5s ease;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.contact-link:hover {
+  background: var(--button-hover);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-link svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Products Section
+   ============================================================ */
+.products-section {
+  position: relative;
+  z-index: 1;
+}
+
+.products-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+  transition: color 0.5s ease;
+}
+
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.product-item {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: rgba(255,255,255,0);
+  transition: background 0.3s ease;
+  pointer-events: none;
+}
+
+.product-item:nth-child(1) { background: var(--product-grad-1); }
+.product-item:nth-child(2) { background: var(--product-grad-2); }
+.product-item:nth-child(3) { background: var(--product-grad-3); }
+
+.product-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+}
+
+.product-item:hover::after {
+  background: rgba(255,255,255,0.12);
+}
+
+.product-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(255,255,255,0.4);
+}
+
+/* ============================================================
+   Theme Switcher
+   ============================================================ */
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.theme-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-dot:hover {
+  transform: scale(1.15);
+}
+
+.theme-dot.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-light);
+}
+
+.theme-dot::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.theme-dot.active::after {
+  opacity: 1;
+}
+
+.theme-dot-light { background: linear-gradient(135deg, #f5f5f7, #e5e5e7); }
+.theme-dot-dark { background: linear-gradient(135deg, #1c1c1e, #2c2c2e); }
+.theme-dot-cyberpunk { background: linear-gradient(135deg, #0a0a1a, #a855f7); }
+.theme-dot-nature { background: linear-gradient(135deg, #2d8a4e, #4ade80); }
+
+.theme-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-left: 8px;
+  transition: color 0.5s ease;
+  min-width: 50px;
+}
+
+/* ============================================================
+   Responsive - Tablet
+   ============================================================ */
+@media (max-width: 640px) {
+  body {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 30px;
+  }
+
+  .card {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+
+  .avatar {
+    width: 130px;
+    height: 130px;
+  }
+
+  .name {
+    font-size: 1.6rem;
+  }
+
+  .title-tags {
+    justify-content: center;
+  }
+
+  .bio-text {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .bio-label, .contact-label, .products-label {
+    text-align: center;
+  }
+
+  .contact-links {
+    justify-content: center;
+  }
+
+  .product-list {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .theme-switcher {
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 400px) {
+  .card {
+    padding: 24px 16px;
+  }
+
+  .name {
+    font-size: 1.4rem;
+  }
+
+  .contact-link {
+    padding: 8px 14px;
+    font-size: 0.82rem;
+  }
+
+  .product-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ============================================================
+   Animation
+   ============================================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-header { animation: fadeInUp 0.6s ease-out; }
+.bio-section { animation: fadeInUp 0.6s ease-out 0.1s both; }
+.contact-section { animation: fadeInUp 0.6s ease-out 0.2s both; }
+.products-section { animation: fadeInUp 0.6s ease-out 0.3s both; }
+.theme-switcher { animation: fadeInUp 0.6s ease-out 0.4s both; }
+</style>
+</head>
+<body>
+
+<div class="card-wrapper">
+  <div class="card">
+
+    <!-- Header: Avatar + Name & Title -->
+    <div class="card-header">
+      <div class="avatar-container">
+        <img src="avatar.svg" alt="程序员鱼皮" class="avatar" onerror="this.style.background='linear-gradient(135deg,#6366f1,#4338ca)'">
+        <div class="avatar-ring"></div>
+      </div>
+      <div class="header-info">
+        <h1 class="name">程序员鱼皮</h1>
+        <p class="title">程序员 / AI 编程博主</p>
+        <div class="title-tags">
+          <span class="tag">全栈开发</span>
+          <span class="tag">AI 编程</span>
+          <span class="tag">创业者</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Bio -->
+    <div class="bio-section">
+      <p class="bio-label">关于</p>
+      <p class="bio-text">
+        前腾讯全栈开发工程师，现自主创业。带团队开发了编程导航、面试鸭、鱼皮 AI 导航等多款产品，
+        致力于用技术让编程学习更简单、更高效。
+      </p>
+    </div>
+
+    <!-- Contact -->
+    <div class="contact-section">
+      <p class="contact-label">联系方式</p>
+      <div class="contact-links">
+        <a href="https://github.com/liyupi" target="_blank" rel="noopener" class="contact-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="https://codefather.cn" target="_blank" rel="noopener" class="contact-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          个人网站
+        </a>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="products-section">
+      <p class="products-label">代表产品</p>
+      <div class="product-list">
+        <a href="https://www.kimi.com/" target="_blank" rel="noopener" class="product-item" style="text-decoration:none;">
+          <span class="product-dot"></span>
+          编程导航
+        </a>
+        <div class="product-item">
+          <span class="product-dot"></span>
+          面试鸭
+        </div>
+        <div class="product-item">
+          <span class="product-dot"></span>
+          鱼皮 AI 导航
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+      <button class="theme-dot theme-dot-light active" data-theme="light" title="浅色主题" aria-label="切换到浅色主题"></button>
+      <button class="theme-dot theme-dot-dark" data-theme="dark" title="深色主题" aria-label="切换到深色主题"></button>
+      <button class="theme-dot theme-dot-cyberpunk" data-theme="cyberpunk" title="赛博朋克主题" aria-label="切换到赛博朋克主题"></button>
+      <button class="theme-dot theme-dot-nature" data-theme="nature" title="自然主题" aria-label="切换到自然主题"></button>
+      <span class="theme-label">浅色</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   Theme Switcher Logic
+   ============================================================ */
+(function() {
+  const themeNames = {
+    light: '浅色',
+    dark: '深色',
+    cyberpunk: '赛博朋克',
+    nature: '自然'
+  };
+
+  const html = document.documentElement;
+  const dots = document.querySelectorAll('.theme-dot');
+  const label = document.querySelector('.theme-label');
+
+  // Load saved theme
+  const saved = localStorage.getItem('card-website-theme') || 'light';
+  html.setAttribute('data-theme', saved);
+  updateActiveDot(saved);
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', function() {
+      const theme = this.dataset.theme;
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('card-website-theme', theme);
+      updateActiveDot(theme);
+    });
+  });
+
+  function updateActiveDot(theme) {
+    dots.forEach(d => d.classList.remove('active'));
+    const active = document.querySelector(`[data-theme="${theme}"]`);
+    if (active) {
+      active.classList.add('active');
+    }
+    if (label) {
+      label.textContent = themeNames[theme] || theme;
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
