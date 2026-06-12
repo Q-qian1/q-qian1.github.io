@@ -679,6 +679,135 @@ body {
 .contact-section { animation: fadeInUp 0.6s ease-out 0.2s both; }
 .products-section { animation: fadeInUp 0.6s ease-out 0.3s both; }
 .theme-switcher { animation: fadeInUp 0.6s ease-out 0.4s both; }
+
+/* ============================================================
+   Chat Widget
+   ============================================================ */
+.chat-bubble-btn {
+  position: fixed; bottom: 28px; right: 28px;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #4f46e5; color: #fff; border: none;
+  cursor: pointer; box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.25s, box-shadow 0.25s;
+  z-index: 9998; font-size: 26px;
+}
+.chat-bubble-btn:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(79,70,229,0.35); }
+.chat-bubble-btn .badge {
+  position: absolute; top: -2px; right: -2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #ef4444; color: #fff; font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; display: none;
+}
+.chat-bubble-btn .bubble-icon { transition: transform 0.3s; }
+.chat-bubble-btn.open .bubble-icon { transform: rotate(180deg); }
+
+.chat-window {
+  position: fixed; bottom: 100px; right: 28px;
+  width: 380px; height: 560px;
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  display: flex; flex-direction: column;
+  overflow: hidden; z-index: 9999;
+  transform: translateY(20px) scale(0.95);
+  opacity: 0; pointer-events: none;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.chat-window.active {
+  transform: translateY(0) scale(1);
+  opacity: 1; pointer-events: all;
+}
+
+.chat-header {
+  background: #4f46e5; color: #fff;
+  padding: 16px 20px; display: flex; align-items: center;
+  justify-content: space-between;
+}
+.chat-header .header-info { display: flex; align-items: center; gap: 12px; }
+.chat-header .avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.2); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700;
+}
+.chat-header .agent-name { font-weight: 600; font-size: 15px; }
+.chat-header .agent-status { font-size: 12px; opacity: 0.85; }
+.chat-header .online-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22c55e; display: inline-block; margin-right: 4px;
+  animation: chatPulse 2s infinite;
+}
+@keyframes chatPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.chat-header .close-btn {
+  background: none; border: none; color: #fff;
+  cursor: pointer; font-size: 20px; padding: 4px 8px;
+  border-radius: 6px; transition: background 0.2s;
+}
+.chat-header .close-btn:hover { background: rgba(255,255,255,0.15); }
+
+.chat-messages {
+  flex: 1; padding: 16px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 8px;
+  background: #f9fafb;
+}
+.chat-messages::-webkit-scrollbar { width: 5px; }
+.chat-messages::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+.message { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.55; word-break: break-word; }
+.message.agent { align-self: flex-start; background: #fff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-bottom-left-radius: 4px; }
+.message.user { align-self: flex-end; background: #4f46e5; color: #fff; border-bottom-right-radius: 4px; }
+.message .time { font-size: 10px; opacity: 0.5; margin-top: 4px; text-align: right; }
+.message.system { align-self: center; background: #f3f4f6; color: #6b7280; font-size: 12px; padding: 6px 12px; border-radius: 20px; max-width: 90%; }
+
+.typing-indicator {
+  align-self: flex-start; background: #fff; padding: 10px 14px;
+  border-radius: 14px; border-bottom-left-radius: 4px;
+  display: flex; gap: 4px; align-items: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.typing-indicator span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #9ca3af; animation: typingBounce 1.4s infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+.chat-input-area {
+  padding: 12px 16px; border-top: 1px solid #e5e7eb;
+  display: flex; gap: 8px; background: #fff;
+}
+.chat-input-area input {
+  flex: 1; padding: 10px 14px; border: 1px solid #e5e7eb;
+  border-radius: 24px; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+.chat-input-area input:focus { border-color: #4f46e5; }
+.chat-input-area button {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #4f46e5; color: #fff; border: none;
+  cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+.chat-input-area button:hover { background: #4338ca; }
+.chat-input-area button:active { transform: scale(0.92); }
+
+@media (max-width: 480px) {
+  .chat-window {
+    width: 100vw; height: 100vh; bottom: 0; right: 0;
+    border-radius: 0;
+  }
+  .chat-bubble-btn { bottom: 20px; right: 20px; }
+}
 </style>
 </head>
 <body>
@@ -826,18 +955,216 @@ function closeWechatModal(e) {
 })();
 </script>
 
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a2b9a036dd5c81c32735e3b/1jqt537fi';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
+<!-- Chat Widget -->
+<button class="chat-bubble-btn" id="bubbleBtn" title="在线客服">
+  <span class="bubble-icon">💬</span>
+  <span class="badge" id="unreadBadge">1</span>
+</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="header-info">
+      <div class="avatar">乾</div>
+      <div>
+        <div class="agent-name">乾 - 在线客服</div>
+        <div class="agent-status"><span class="online-dot"></span>在线</div>
+      </div>
+    </div>
+    <button class="close-btn" id="closeBtn">✕</button>
+  </div>
+  <div id="messagesContainer" class="chat-messages"></div>
+  <div id="typingIndicator" class="typing-indicator" style="display:none;">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" id="messageInput" placeholder="输入消息..." maxlength="500">
+    <button id="sendBtn">➤</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var CHANNEL_NAME = 'chatwidget_channel';
+  var channel = null;
+  var visitorInfo = { name: '访客' + Math.random().toString(36).slice(2, 6) };
+  var isChatOpen = false;
+  var isConnected = false;
+  var agentOnline = false;
+
+  var bubbleBtn = document.getElementById('bubbleBtn');
+  var chatWindow = document.getElementById('chatWindow');
+  var closeBtn = document.getElementById('closeBtn');
+  var messagesContainer = document.getElementById('messagesContainer');
+  var typingIndicator = document.getElementById('typingIndicator');
+  var messageInput = document.getElementById('messageInput');
+  var sendBtn = document.getElementById('sendBtn');
+  var unreadBadge = document.getElementById('unreadBadge');
+
+  function initChannel() {
+    try {
+      channel = new BroadcastChannel(CHANNEL_NAME);
+      channel.onmessage = handleIncoming;
+      channel.postMessage({ type: 'visitor_online' });
+    } catch(e) {
+      initLocalStorageFallback();
+    }
+  }
+
+  function initLocalStorageFallback() {
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'chatwidget_msg') {
+        try { handleIncoming({ data: JSON.parse(e.newValue) }); } catch(_) {}
+      }
+    });
+    channel = {
+      postMessage: function(data) {
+        localStorage.setItem('chatwidget_msg', JSON.stringify(Object.assign({}, data, { _ts: Date.now() })));
+        window.dispatchEvent(new StorageEvent('storage', { key: 'chatwidget_msg', newValue: JSON.stringify(data) }));
+      }
+    };
+  }
+
+  function handleIncoming(event) {
+    var msg = event.data;
+    if (!msg || msg._source === 'visitor') return;
+    switch(msg.type) {
+      case 'agent_online':
+        agentOnline = true;
+        updateAgentStatus();
+        break;
+      case 'agent_offline':
+        agentOnline = false;
+        updateAgentStatus();
+        break;
+      case 'agent_message':
+        hideTyping();
+        addMessage(msg.text, 'agent', msg.time);
+        if (!isChatOpen) updateUnread();
+        break;
+      case 'agent_typing':
+        if (isChatOpen) showTyping();
+        break;
+      case 'agent_stop_typing':
+        hideTyping();
+        break;
+      case 'ping':
+        channel.postMessage({ type: 'pong', _source: 'visitor' });
+        break;
+    }
+  }
+
+  function send(msg) {
+    msg._source = 'visitor';
+    msg.visitor = visitorInfo;
+    channel.postMessage(msg);
+  }
+
+  function updateAgentStatus() {
+    var dot = document.querySelector('.agent-status');
+    if (dot) {
+      dot.innerHTML = agentOnline
+        ? '<span class="online-dot"></span>在线'
+        : '<span style="color:#fbbf24;">●</span> 离线';
+    }
+  }
+
+  function addMessage(text, role, time) {
+    var div = document.createElement('div');
+    div.className = 'message ' + role;
+    div.innerHTML = text + '<div class="time">' + (time || formatTime()) + '</div>';
+    messagesContainer.appendChild(div);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function addSystemMessage(text) {
+    var div = document.createElement('div');
+    div.className = 'message system';
+    div.textContent = text;
+    messagesContainer.appendChild(div);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function showTyping() {
+    typingIndicator.style.display = 'flex';
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function hideTyping() {
+    typingIndicator.style.display = 'none';
+  }
+
+  function formatTime() {
+    var d = new Date();
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  }
+
+  function updateUnread() {
+    var msgs = messagesContainer.querySelectorAll('.message.agent');
+    var count = msgs.length;
+    if (count > 0 && !isChatOpen) {
+      unreadBadge.style.display = 'flex';
+      unreadBadge.textContent = count > 99 ? '99+' : count;
+    }
+  }
+
+  function clearUnread() {
+    unreadBadge.style.display = 'none';
+    unreadBadge.textContent = '0';
+  }
+
+  function sendMessage() {
+    var text = messageInput.value.trim();
+    if (!text) return;
+    addMessage(text, 'user', formatTime());
+    send({ type: 'visitor_message', text: text, time: formatTime() });
+    messageInput.value = '';
+    send({ type: 'visitor_stop_typing' });
+  }
+
+  function connectChat() {
+    if (isConnected) return;
+    isConnected = true;
+    addSystemMessage('已连接到客服');
+    send({ type: 'visitor_joined', visitor: visitorInfo, firstMessage: '' });
+  }
+
+  messageInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+  });
+  messageInput.addEventListener('input', function() {
+    if (messageInput.value.length > 0) {
+      send({ type: 'visitor_typing' });
+    }
+  });
+  sendBtn.addEventListener('click', sendMessage);
+
+  bubbleBtn.addEventListener('click', function() {
+    isChatOpen = !isChatOpen;
+    chatWindow.classList.toggle('active', isChatOpen);
+    bubbleBtn.classList.toggle('open', isChatOpen);
+    if (isChatOpen) {
+      clearUnread();
+      connectChat();
+    }
+  });
+
+  closeBtn.addEventListener('click', function() {
+    isChatOpen = false;
+    chatWindow.classList.remove('active');
+    bubbleBtn.classList.remove('open');
+  });
+
+  setInterval(function() {
+    send({ type: 'visitor_online' });
+  }, 10000);
+
+  initChannel();
+
+  setTimeout(function() {
+    send({ type: 'visitor_online' });
+  }, 500);
 })();
 </script>
-<!--End of Tawk.to Script-->
+
 </body>
 </html>
