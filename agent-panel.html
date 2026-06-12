@@ -1,3 +1,4 @@
+<!-- v2.0 2026-06-12: delete visitor chat button -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -78,7 +79,14 @@ body {
 .visitor-info { flex: 1; min-width: 0; }
 .visitor-name { font-size: 13px; font-weight: 500; }
 .visitor-preview { font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.visitor-time { font-size: 10px; color: #64748b; }
+.visitor-item:hover .visitor-delete { opacity: 1; }
+.visitor-delete {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: none; border: none; color: #94a3b8; font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.15s; flex-shrink: 0;
+}
+.visitor-delete:hover { background: #ef4444; color: #fff; }
 .main { flex: 1; display: flex; flex-direction: column; }
 .chat-header {
   padding: 14px 24px; border-bottom: 1px solid #334155;
@@ -283,10 +291,20 @@ body {
         '<div class="visitor-avatar">' + (v.name || '?').charAt(0) + '</div>' +
         '<div class="visitor-info"><div class="visitor-name">' + v.name + '</div>' +
         '<div class="visitor-preview">' + (v.lastMsg || '暂无消息') + '</div></div>' +
-        '<div class="visitor-time">' + formatTimeFromISO(v.lastTime) + '</div></div>';
+        '<div class="visitor-time">' + formatTimeFromISO(v.lastTime) + '</div>' +
+        '<button class="visitor-delete" data-id="' + v.id + '">&#10005;</button></div>';
     }).join('');
     list.querySelectorAll('.visitor-item').forEach(function(item) {
-      item.addEventListener('click', function() { selectVisitor(this.dataset.id); });
+      item.addEventListener('click', function(e) {
+        if (e.target.classList.contains('visitor-delete')) return;
+        selectVisitor(this.dataset.id);
+      });
+    });
+    list.querySelectorAll('.visitor-delete').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        deleteVisitor(this.dataset.id);
+      });
     });
   }
 
@@ -300,6 +318,18 @@ body {
     document.getElementById('sendBtn').disabled = false;
     renderVisitorList();
     renderMessages(id);
+  }
+
+  function deleteVisitor(id) {
+    if (activeVisitorId === id) {
+      activeVisitorId = null;
+      document.getElementById('chatTitle').textContent = '选择访客';
+      document.getElementById('inputArea').style.display = 'none';
+      document.getElementById('chatArea').innerHTML = '<div class="chat-messages" id="messagesContainer"></div>';
+      messagesContainer = document.getElementById('messagesContainer');
+    }
+    delete visitors[id];
+    renderVisitorList();
   }
 
   function renderMessages(id) {
