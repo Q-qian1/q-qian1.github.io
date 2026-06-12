@@ -1,4 +1,4 @@
-<!-- v2.3 2026-06-12: hide agent messages without recipient -->
+<!-- v2.4 2026-06-12: no history persistence, fresh visitorId each visit -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -992,14 +992,7 @@ function closeWechatModal(e) {
   var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1cmN2bXJxenpnanhqcWFod3V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDMwMDQsImV4cCI6MjA5NjgxOTAwNH0.HDRwOuykz3LBwUdJE5CZ8WbMTgmq8js_HA61HEFM2Bg';
   var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  var visitorId;
-  try {
-    visitorId = localStorage.getItem('chat_visitor_id');
-  } catch(e) { visitorId = null; }
-  if (!visitorId) {
-    visitorId = 'v_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
-    try { localStorage.setItem('chat_visitor_id', visitorId); } catch(e) {}
-  }
+  var visitorId = 'v_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
   console.log('Visitor ID:', visitorId);
   var visitorName = '访客' + visitorId.slice(2, 6);
 
@@ -1129,7 +1122,7 @@ function closeWechatModal(e) {
     )
     .subscribe(function(status) {
       if (status === 'SUBSCRIBED') {
-        loadHistory();
+        console.log('Chat connected, visitor:', visitorId);
       }
     });
 })();
